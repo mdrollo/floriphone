@@ -1,0 +1,300 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    <meta charset="utf-8">
+	<meta name="format-detection" content="telephone=no" />
+    <style media="screen" type="text/css">
+        body: {
+            overflow: hidden;
+        }
+		.search {
+			width:200px;
+			height:30px;
+			font: 18px arial, sans-serif;
+            font-weight: bold;
+			padding:2px;
+			border-radius: 5px;
+		}
+		#scan-button{
+			background-color:white;
+			background:url(lupe.png) no-repeat;
+			background-size: 35px 34px;
+			border:none;
+			padding:2px;
+			position:absolute;
+			top:10px;
+			height:33px;
+			width:35px;
+			right:12px;
+			border-radius: 5px;
+		}
+        .mytd {
+            background-color: #DDDDDD;
+            height: 40px;
+            font: 18px arial, sans-serif;
+            font-weight: bold;
+            color: black;
+            width: 100%;
+			border-radius: 5px;
+			padding-left:5px;
+			margin-bottom: 5px;
+        }
+		#ausframe
+		{
+			width:100px;
+			height:200px;
+			
+		}
+        #ausgabe {
+            overflow: scroll;
+            width: 100%;
+            height: 100%;
+			padding-right:65px;
+        }
+
+        #head {
+			width:100%;
+            height: 40px;
+        }
+		#liste{
+		}
+		#detailtable{
+			width:100%;
+		}
+		
+		#backbutton{
+			width:100%;
+			height:30px;
+			font: 18px arial, sans-serif;
+            font-weight: bold;
+			padding:2px;
+			border-radius: 5px;
+		}
+		h1{
+			font: 24px arial, sans-serif;
+            font-weight: bold;
+			color:yellow;
+			text-align: center;
+		}
+		h2
+		{
+			font: 22px arial, sans-serif;
+			color:yellow;
+			text-align: center;
+		}
+		p {
+			font: 20px arial, sans-serif;
+			color:yellow;
+			margin-left:20px;
+		}
+    </style>
+
+    <script src="phonegap.js"></script>
+    <script src="jquery-1.11.1.min.js"></script>
+	<script src="jquery.overscroll.js"></script>
+	<script>
+	$(function(o){
+	o = $("#ausgabe").overscroll({
+	cancelOn: '.no-drag',
+	captureWheel: false,
+	hoverThumbs: true,
+	persistThumbs: true,
+	showThumbs: false,
+	scrollLeft: 200,
+	scrollTop: 100
+	}).on('overscroll:dragstart overscroll:dragend overscroll:driftstart overscroll:driftend', function(event){
+	console.log(event.type);
+	});
+	});
+	</script>
+    <script type="text/javascript">
+		var wdt = 307;
+
+        function ajx(params) {
+            WaitMsg(true);
+            $.ajax({
+                type: "POST",
+                url: 'http://sdfhshdfdfh.bsni.de/data', cache: false, data: params, dataType: "xml",
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    WaitMsg(false);
+                    alert(errorThrown);
+                    alert(XMLHttpRequest.responseText);
+                },
+                success: function (xml) {
+                    WaitMsg(false);
+                    hreq(xml);
+                }
+            });
+        }
+
+        function WaitMsg(show) { }
+        var res = '';
+		var memo = '';
+        function hreq(xml) {
+            if ($(xml).find("error").length > 0) {
+                vvsp = $(xml).find("error");
+                vvsp2 = $(xml).find("errorcode");
+                vvsp = $(vvsp).text();
+                if (vvsp == 'Benutzer nicht angemeldet.') {
+                    document.location.href = '../../default.aspx?cmd=logout';
+
+                }
+                $("#mhead").html("<h1>" + vvsp + "</h1>");
+                return;
+            }
+            if ($(xml).find("result").length > 0) {
+                vvsp = $(xml).find("result");
+
+                if ($(vvsp).text() == '0') {
+                    $("#ausgabe").html("<h1>Sie sind nicht berechtigt diese Anwendung zu benutzen!</h1><h2>Ihr Handy muss zuerst freigeschaltet werden</h2><p>Die Seriennummer Ihres Mobilgerätes wurde zu diesem Zweck gespeichert.<br /> Bitte notieren Sie folgende ID:<b>" + device.uuid + "</b> und wenden sich an die Geschäftsführung.");
+
+                } else {
+                    res = '';
+                    $(vvsp).find("ordnungsbegriff").each(function () {
+                        if (res == '')
+                            res = '<table id="liste">';
+                        t = $(this).text();
+                        res += '<tr><td id = "' + $(this).attr("id") + '" class="mytd">' + t + '</td></tr>';
+                    })
+                    res += '</table>';
+                    $("#ausgabe").html(res);
+					$("#liste").css("width", wdt + "px");
+                    clicktd();
+                }
+
+                return;
+            }
+            if ($(xml).find("detail").length > 0) {
+                vvsp = $(xml).find("detail");
+                res = '<table id="detailtable">';
+                if ($(vvsp).find("telefon1").text() != "")
+					res += '<tr><td class="mytd"><span class="tel">' + $(vvsp).find("telefon1").text() + '</span><br />' + $(vvsp).find("tel_bemerkung1").text() + '</td></tr>';
+				if ($(vvsp).find("telefon2").text() != "")
+					res += '<tr><td class="mytd"><span class="tel">' + $(vvsp).find("telefon2").text() + '</span><br />' + $(vvsp).find("tel_bemerkung2").text() + '</td></tr>';
+                if ($(vvsp).find("telefon3").text() != "")
+					res += '<tr><td class="mytd"><span class="tel">' + $(vvsp).find("telefon3").text() + '</span><br />' + $(vvsp).find("tel_bemerkung3").text() + '</td></tr>';
+                if ($(vvsp).find("telefon4").text() != "")
+					res += '<tr><td class="mytd"><span class="tel">' + $(vvsp).find("telefon4").text() + '</span><br />' + $(vvsp).find("tel_bemerkung4").text() + '</td></tr>';
+				if ($(vvsp).find("telefon5").text() != "")	
+					res += '<tr><td class="mytd"><span class="tel">' + $(vvsp).find("telefon5").text() + '</span><br />' + $(vvsp).find("tel_bemerkung5").text() + '</td></tr>';
+
+                if ($(vvsp).find("email1").text() != "")	
+					res += '<tr><td class="mytd"><a href="mailto:"' + $(vvsp).find("email1").text() + '>' + $(vvsp).find("email1").text() + '</a><br />' + $(vvsp).find("email_bemerkung1").text() + '</td></tr>';
+                if ($(vvsp).find("email2").text() != "")
+					res += '<tr><td class="mytd"><a href="mailto:"' + $(vvsp).find("email2").text() + '>'+ $(vvsp).find("email2").text() + '</span><br />' + $(vvsp).find("email_bemerkung2").text() + '</td></tr>';
+                if ($(vvsp).find("email3").text() != "")
+					res += '<tr><td class="mytd"><a href="mailto:"' + $(vvsp).find("email3").text() + '>' + $(vvsp).find("email3").text() + '</span><br />' + $(vvsp).find("email_bemerkung3").text() + '</td></tr>';
+                if ($(vvsp).find("email4").text() != "")
+					res += '<tr><td class="mytd"><a href="mailto:"' + $(vvsp).find("email4").text() + '>' + $(vvsp).find("email4").text() + '</span><br />' + $(vvsp).find("email_bemerkung4").text() + '</td></tr>';
+                if ($(vvsp).find("email5").text() != "")
+					res += '<tr><td class="mytd"><a href="mailto:"' + $(vvsp).find("email5").text() + '>' + $(vvsp).find("email5").text() + '</span><br />' + $(vvsp).find("email_bemerkung5").text() + '</td></tr>';
+
+                res += '<tr><td class="mytd"><span class="adres">' + $(vvsp).find("p_adresse_strasse").text() + '<br />' + $(vvsp).find("p_adresse_plz_ort").text() + '&nbsp;' + $(vvsp).find("p_adresse_ort").text() + '</span></td></tr>';
+
+				res += '<tr><td class="mytd"><input type="button" id="backbutton" value="zurück" /></td></tr>';
+                res += '</table>';
+				memo = $("#ausgabe").html();
+                $("#ausgabe").html(res);
+				$("#detailtable").css("width", wdt + "px");
+				$("#backbutton").click(function(){$("#ausgabe").html(memo);clicktd();})
+				$(".tel").click(function(){backdetail=this;$(this).css("background-color","white");setTimeout(function(){$(backdetail).css("background-color","#DDDDDD");},1000);dial($(this).text())});
+				$(".adres").click(function(){backdetail=this;$(this).css("background-color","white");navigation($(this).text());setTimeout(function(){$(backdetail).css("background-color","#DDDDDD");},1000);dial($(this).text())});
+            }
+        }
+		var backthis = null;
+		var backdetail = null;
+		function clicktd(){
+			$(".mytd").css("background-color","#DDDDDD");
+			$(".mytd").click(function (src) {
+				$(this).css("background-color","white");
+				backthis = this;
+				setTimeout(function(){$(backthis).css("background-color","#DDDDDD");},100);
+                id = $(src.target).attr("id");
+                ajx('security='+device.uuid+'&detail=' + id);
+            })
+		}
+        function suchen2() {
+            ajx('security='+device.uuid+'&such=' + document.getElementById("suchtext").value)
+        }
+
+        function dial(number)
+		{	
+			number = number.replace(/ /g,"").replace(/-/g,"").replace(/\//g,"")
+			window.open('tel:'+ number, '_system')
+		}
+        /* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+        see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+        for more details -jm */
+        /*
+        function handleOpenURL(url)
+        {
+        // TODO: do something with the url passed in.
+        }
+        */
+
+        function onBodyLoad() {
+            document.addEventListener("deviceready", onDeviceReady, false);
+        }
+		function navigation(adresse){
+			window.open('https://www.google.com/maps?daddr=' + adresse, '_system');
+		}
+        /* When this function is called, PhoneGap has been initialized and is ready to roll */
+        /* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+        see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+        for more details -jm */
+		var isdeviceready = false;
+		var isjqueryready = false;
+		var counter = 20;
+        function onDeviceReady() {
+           isdeviceready = true;
+        }
+		$(document).ready(function(){
+			isjqueryready = true;
+			$("#suchtext").keydown(function(key){
+				if(key.keyCode==13) {
+					$("#scan-button").focus();
+					$("#scan-button").click();
+				}
+			});
+			$(window).resize(function () {
+                vH = $(window).height() - 40;
+				vW = $(window).width();
+                if (vH < 400) vH = 400;
+                $("#ausframe").css("height", (vH) + "px");
+				$("#ausframe").css("width", (vW) + "px");
+				wdt = vW - 20;
+				$("#suchtext").css("width",(wdt-35)+'px')
+            }).trigger('resize');
+			setTimeout(allready,500);
+		})
+		function allready()
+		{
+			if(typeof(device) == 'undefined')
+				device = {uuid:'123456'}
+			if ((!isdeviceready) && (!isjqueryready))
+			{
+				counter--;
+				if (counter < 0)
+					alert('allgemeiner Fehler');
+				setTimeout(allready,500);
+			} else
+			{
+				ajx('security='+device.uuid+'&such=a');
+			}
+		}
+
+    </script>
+</head>
+<body onload="onBodyLoad()" style="background-color:grey;">
+    <div id="head">
+        <input id="suchtext" type="text" class="search" /><button id="scan-button" onclick="suchen2()"></button>
+    </div>
+	<div id ="ausframe">
+		<div id="ausgabe">
+		</div>
+	</div>	
+
+</body>
+</html>

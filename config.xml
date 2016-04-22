@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+ <widget xmlns = "http://www.w3.org/ns/widgets"
+ xmlns:gap = "http://phonegap.com/ns/1.0"
+ id = "com.phonegap.example"
+ versionCode="10" 
+ version = "2.9.0">
+
+ <!-- versionCode is optional and Android only -->
+
+ <name>FloriPhone</name>
+
+ <description>
+ERP Dialer
+ </description>
+
+ <author href="http://www.bsni.de" email="droll@bsni.de">
+Michael Droll
+ </author>
+ <gap:plugin name="com.phonegap.plugin.statusbar" />
+ <gap:plugin name="org.apache.cordova.inappbrowser" />
+ <gap:plugin name="org.apache.cordova.device" />
+  <preference name="fullscreen" value="true" />
+ <preference name="webviewbounce" value="false" />
+  
+ <preference name="ios-statusbarstyle" value="black-opaque" />
+ <icon src="icon.png" />
+ </widget>
+
