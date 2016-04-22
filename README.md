@@ -1,0 +1,2 @@
+# floriphone
+experiment with phonegap
