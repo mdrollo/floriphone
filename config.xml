@@ -16,7 +16,7 @@ ERP Dialer
  <author href="http://www.bsni.de" email="droll@bsni.de">
 Michael Droll
  </author>
- <gap:plugin name="com.phonegap.plugin.statusbar" />
+ <plugin name="cordova-plugin-statusbar" />
  <gap:plugin name="org.apache.cordova.inappbrowser" />
  <gap:plugin name="org.apache.cordova.device" />
   <preference name="fullscreen" value="true" />
