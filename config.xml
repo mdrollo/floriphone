@@ -17,7 +17,7 @@ ERP Dialer
 Michael Droll
  </author>
  <plugin name="cordova-plugin-statusbar" />
- <gap:plugin name="org.apache.cordova.inappbrowser" />
+ <plugin name="cordova-plugin-inappbrowser" />
  <gap:plugin name="org.apache.cordova.device" />
   <preference name="fullscreen" value="true" />
  <preference name="webviewbounce" value="false" />
