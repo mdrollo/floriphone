@@ -18,7 +18,7 @@ Michael Droll
  </author>
  <plugin name="cordova-plugin-statusbar" />
  <plugin name="cordova-plugin-inappbrowser" />
- <gap:plugin name="org.apache.cordova.device" />
+ <plugin name="cordova-plugin-device" />
   <preference name="fullscreen" value="true" />
  <preference name="webviewbounce" value="false" />
   
